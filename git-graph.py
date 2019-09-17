@@ -1,3 +1,6 @@
+import sys
+from subprocess import run
+
 
 def from_log_to_dot(lines):
     """
@@ -9,30 +12,30 @@ def from_log_to_dot(lines):
     ...     "acb2 (3dba) ",
     ...     "3dba () ",
     ... ])))
-        digraph git_graph {
-            rankdir = BT
-            {
-                rank = same
-                "abba"
-                "master"
-            }
-            "master" [shape=box, style=filled, fillcolor=orange]
-            "master" -> "abba"
-            "f3ac" -> "abba"
-            "cc32" -> "abba"
-            {
-                rank = same
-                "cc32"
-                "dev"
-                "feature-x"
-            }
-            "dev" [shape=box, style=filled, fillcolor=orange]
-            "feature-x" [shape=box, style=filled, fillcolor=orange]
-            "dev" -> "cc32"
-            "feature-x" -> "cc32"
-            "acb2" -> "f3ac"
-            "3dba" -> "acb2"
+    digraph git_graph {
+        rankdir = BT
+        {
+            rank = same
+            "abba"
+            "master"
         }
+        "master" [shape=box, style=filled, fillcolor=orange]
+        "master" -> "abba"
+        "f3ac" -> "abba"
+        "cc32" -> "abba"
+        {
+            rank = same
+            "cc32"
+            "dev"
+            "feature-x"
+        }
+        "dev" [shape=box, style=filled, fillcolor=orange]
+        "feature-x" [shape=box, style=filled, fillcolor=orange]
+        "dev" -> "cc32"
+        "feature-x" -> "cc32"
+        "acb2" -> "f3ac"
+        "3dba" -> "acb2"
+    }
     """
     yield 'digraph git_graph {'
     yield '    rankdir = BT'
@@ -42,7 +45,7 @@ def from_log_to_dot(lines):
         parents, _, refs = rest.partition(') ')
         if refs:
             yield '    {'
-            yield '        rank = same '
+            yield '        rank = same'
             yield f'        "{commit}"'
             for ref in refs.split(' '):
                 yield f'        "{ref}"'

@@ -1,5 +1,5 @@
 import sys
-from subprocess import run
+from subprocess import run, PIPE
 
 
 def from_log_to_dot(lines):
@@ -7,7 +7,7 @@ def from_log_to_dot(lines):
     # doctest: +NORMALIZE_WHITESPACE
     >>> print("\\n".join(from_log_to_dot([
     ...     "abba (f3ac cc32) master",
-    ...     "cc32 () dev feature-x",
+    ...     "cc32 () dev, feature-x",
     ...     "f3ac (acb2) ",
     ...     "acb2 (3dba) ",
     ...     "3dba () ",
@@ -47,14 +47,35 @@ def from_log_to_dot(lines):
             yield '    {'
             yield '        rank = same'
             yield f'        "{commit}"'
-            for ref in refs.split(' '):
+            ref_list = refs.split(', ')
+            for ref in ref_list:
                 yield f'        "{ref}"'
             yield '    }'
-            for ref in refs.split(' '):
+            for ref in ref_list:
                 yield f'    "{ref}" [shape=box, style=filled, fillcolor=orange]'
-            for ref in refs.split(' '):
+            for ref in ref_list:
                 yield f'    "{ref}" -> "{commit}"'
         if parents:
             for parent in parents.split(" "):
                 yield f'    "{parent}" -> "{commit}"'
     yield '}'
+
+
+def main(args):
+    result = run(
+        [
+            'git',
+            'log',
+            '--format=%h (%p) %D'
+        ],
+        check=True,
+        universal_newlines=True,
+        stdout=PIPE
+    )
+    dot = from_log_to_dot(result.stdout.splitlines())
+    for line in dot:
+        print(line)
+
+
+if __name__ == "__main__":
+    main(sys.argv)

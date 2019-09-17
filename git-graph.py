@@ -66,7 +66,9 @@ def main(args):
         [
             'git',
             'log',
-            '--format=%h (%p) %D'
+            '--format=%h (%p) %D',
+            '--decorate=short',
+            '--decorate-refs=refs/heads/',
         ],
         check=True,
         universal_newlines=True,

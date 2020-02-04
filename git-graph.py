@@ -98,6 +98,9 @@ def main(inpath="./", topath="./git-log.png"):
         inpath,
         "log",
         "--format=%h (%p) %D",
+        "--branches",
+        # TODO: add some feature like the following
+        # '--since="2 month ago"',
         "--decorate=short",
         "--decorate-refs=refs/heads/",
     )

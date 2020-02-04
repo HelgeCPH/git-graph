@@ -82,7 +82,7 @@ def from_log_to_dot(lines):
                 yield f'    "{ref}" -> "{commit}"'
         if parents:
             for parent in parents.split(" "):
-                yield f'    "{parent}" -> "{commit}"'
+                yield f'    "{parent}" -> "{commit}" [dir=back]'
     yield "}"
 
 

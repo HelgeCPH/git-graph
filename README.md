@@ -16,6 +16,18 @@ Options:
 
 ```
 
+## Dependencies
+
+To use this tool you need to have Python 3, Git and Graphviz installed on your system.
+
+On Ubuntu, you may install the latter via:
+
+```bash
+sudo apt install graphviz
+```
+
+
+## Example
 
 For example, an illustration of this repository until commit [`73892f3`](https://github.com/HelgeCPH/git-graph/tree/73892f3fe669f1155e6777ced7dcc0ca04c0f561) looks like the following:
 

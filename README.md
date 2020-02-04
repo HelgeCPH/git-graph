@@ -15,3 +15,8 @@ Options:
   --to=<outpath>    Path to output image [default: ./git-log.png].
 
 ```
+
+
+For example, an illustration of this repository until commit [`f5fb6b4`]() looks like the following:
+
+![](example/git-log.png)

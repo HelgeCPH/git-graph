@@ -1,5 +1,30 @@
+#!/usr/bin/env python
+"""
+git-graph, a small tool to generate graph visualizations of a Git history
+as PNG file.
+
+Usage:
+  git-graph.py [<from>] [--to=<outpath>]  
+  git-graph.py -h | --help
+  git-graph.py --version
+
+Options:
+  -h --help         Show this screen.
+  --version         Show version.
+  <from>            Path to repository to visualize [default: ./].
+  --to=<outpath>    Path to output image [default: ./git-log.png].
+
+"""
+
+
 import sys
+from sys import platform
+from shutil import which
+from docopt import docopt
 from subprocess import run, PIPE
+
+
+VERSION = 1.0
 
 
 def from_log_to_dot(lines):
@@ -37,20 +62,20 @@ def from_log_to_dot(lines):
         "3dba" -> "acb2"
     }
     """
-    yield 'digraph git_graph {'
-    yield '    rankdir = BT'
+    yield "digraph git_graph {"
+    yield "    rankdir = BT"
     line: str
     for line in lines:
-        commit, _, rest = line.partition(' (')
-        parents, _, refs = rest.partition(') ')
+        commit, _, rest = line.partition(" (")
+        parents, _, refs = rest.partition(") ")
         if refs:
-            yield '    {'
-            yield '        rank = same'
+            yield "    {"
+            yield "        rank = same"
             yield f'        "{commit}"'
-            ref_list = refs.split(', ')
+            ref_list = refs.split(", ")
             for ref in ref_list:
                 yield f'        "{ref}"'
-            yield '    }'
+            yield "    }"
             for ref in ref_list:
                 yield f'    "{ref}" [shape=box, style=filled, fillcolor=orange]'
             for ref in ref_list:
@@ -58,26 +83,43 @@ def from_log_to_dot(lines):
         if parents:
             for parent in parents.split(" "):
                 yield f'    "{parent}" -> "{commit}"'
-    yield '}'
+    yield "}"
 
 
-def main(args):
-    result = run(
-        [
-            'git',
-            'log',
-            '--format=%h (%p) %D',
-            '--decorate=short',
-            '--decorate-refs=refs/heads/',
-        ],
-        check=True,
-        universal_newlines=True,
-        stdout=PIPE
+def main(inpath="./", topath="./git-log.png"):
+    if not which("dot"):
+        # Check if graphviz is installed at all
+        print("You need to install graphviz for this tool.")
+        exit(1)
+
+    git_log_cmd = (
+        "git",
+        "-C",
+        inpath,
+        "log",
+        "--format=%h (%p) %D",
+        "--decorate=short",
+        "--decorate-refs=refs/heads/",
     )
+
+    result = run(git_log_cmd, check=True, universal_newlines=True, stdout=PIPE)
     dot = from_log_to_dot(result.stdout.splitlines())
-    for line in dot:
-        print(line)
+
+    graphviz_cmd = ("dot", "-o", topath, "-Tpng")
+    run(graphviz_cmd, input="".join(dot), encoding="ascii")
+    # TODO: Add a bit of error handling here
+    print(f"Created {topath}")
+
+    if platform == "darwin":
+        open_cmd = ("open", topath)
+        run(open_cmd)
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+
+    arguments = docopt(__doc__, version=VERSION)
+
+    if arguments["<from>"]:
+        main(inpath=arguments["<from>"], topath=arguments["--to"])
+    else:
+        main(topath=arguments["--to"])

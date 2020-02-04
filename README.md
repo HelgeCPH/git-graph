@@ -17,6 +17,6 @@ Options:
 ```
 
 
-For example, an illustration of this repository until commit [`f5fb6b4`]() looks like the following:
+For example, an illustration of this repository until commit [`f5fb6b4`](https://github.com/HelgeCPH/git-graph/tree/f5fb6b4a8ee03f2aa44626e34d11dbd1cb104e28) looks like the following:
 
 ![](example/git-log.png)

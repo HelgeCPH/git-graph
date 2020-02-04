@@ -1,8 +1,17 @@
 # git-graph
-Tool to make graphs over git history for use in documentation and in education
+git-graph, a small tool to generate graph visualizations of a Git history
+as PNG file.
 
-usage:
 ```
-$ python3 git-graph > git-log.dot
-$ dot git-log.dot -o git-log.png -Tpng
+Usage:
+  git-graph.py [<from>] [--to=<outpath>]  
+  git-graph.py -h | --help
+  git-graph.py --version
+
+Options:
+  -h --help         Show this screen.
+  --version         Show version.
+  <from>            Path to repository to visualize [default: ./].
+  --to=<outpath>    Path to output image [default: ./git-log.png].
+
 ```

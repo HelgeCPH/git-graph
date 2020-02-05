@@ -116,6 +116,9 @@ def main(inpath="./", topath="./git-log.png"):
     if platform == "darwin":
         open_cmd = ("open", topath)
         run(open_cmd)
+    elif platform == "linux":
+        open_cmd = ("eog", topath)
+        run(open_cmd)
 
 
 if __name__ == "__main__":
